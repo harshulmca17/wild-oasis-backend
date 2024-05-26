@@ -139,6 +139,106 @@ public class MysqlRestController {
         return result;
     }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/bookingsAfterDate")
+    public Result   getBookingsAfterDate(@RequestBody JSONObject request) throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+//        System.out.println(requestBooking);
+        System.out.println(request);
+//        JSONObject mergedJSON = me
+        try {
+            JSONObject resultFinal = new JSONObject();
+
+
+            Integer daysGap = (Integer) request.get("daysGap");
+            String type = (String) request.get("type");
+            List<Bookings> bookings = null;
+
+            if(type == "stays"){
+                bookings = bookingRepository.findStaysByAfterDays(daysGap);
+            }else{
+                bookings = bookingRepository.findBookingsByAfterDays(daysGap);
+            }
+
+
+            List<Object> resultList = new ArrayList<>();
+            for (Bookings booking:bookings){
+                Optional<Guest> guest = guestRepository.findById(booking.getGuestId());
+                Optional<Cabin> cabin = cabinRepository.findById(booking.getCabinId());
+
+
+
+                Gson gson = new GsonBuilder().create();
+                String json = gson.toJson(booking);// obj is your object
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObj = (JSONObject) parser.parse(json);
+
+//                jsonObj.put("created_at",booking.getCreated_at().toString());
+//                jsonObj.put("startDate",booking.getStartDate().toString());
+//                jsonObj.put("endDate",booking.getEndDate().toString());
+
+                jsonObj.put("cabins",cabin);
+                jsonObj.put("guests",guest);
+
+
+                resultList.add(jsonObj);
+            }
+
+            resultFinal.put(type,resultList);
+            result.setResult(resultFinal);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }@CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/getStaysTodayActivity")
+    public Result   getStaysTodayActivity() throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+        try {
+            JSONObject resultFinal = new JSONObject();
+
+
+            List<Bookings> bookings = bookingRepository.getStaysTodayActivity();
+
+
+            List<Object> resultList = new ArrayList<>();
+            for (Bookings booking:bookings){
+                Optional<Guest> guest = guestRepository.findById(booking.getGuestId());
+                Optional<Cabin> cabin = cabinRepository.findById(booking.getCabinId());
+
+
+
+                Gson gson = new GsonBuilder().create();
+                String json = gson.toJson(booking);// obj is your object
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObj = (JSONObject) parser.parse(json);
+
+//                jsonObj.put("created_at",booking.getCreated_at().toString());
+//                jsonObj.put("startDate",booking.getStartDate().toString());
+//                jsonObj.put("endDate",booking.getEndDate().toString());
+
+                jsonObj.put("cabins",cabin);
+                jsonObj.put("guests",guest);
+
+
+                resultList.add(jsonObj);
+            }
+
+
+            result.setResult(resultList);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @PostMapping("/bookings")
     public Result getBookingsByFilter(@RequestBody JSONObject request) throws IOException, ParseException {
         Result result = new Result();
