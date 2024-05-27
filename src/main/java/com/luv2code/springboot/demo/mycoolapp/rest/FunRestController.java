@@ -1,9 +1,9 @@
 package com.luv2code.springboot.demo.mycoolapp.rest;
 
-import com.luv2code.springboot.demo.mycoolapp.Api.Rawg;
-import com.luv2code.springboot.demo.mycoolapp.ElasticSearchImpl;
-import com.luv2code.springboot.demo.mycoolapp.ElasticSearchRequestDto;
-import com.luv2code.springboot.demo.mycoolapp.Games;
+//import com.luv2code.springboot.demo.mycoolapp.Api.Rawg;
+//import com.luv2code.springboot.demo.mycoolapp.ElasticSearchImpl;
+//import com.luv2code.springboot.demo.mycoolapp.ElasticSearchRequestDto;
+//import com.luv2code.springboot.demo.mycoolapp.Games;
 import com.luv2code.springboot.demo.mycoolapp.Result.Result;
 import com.luv2code.springboot.demo.mycoolapp.mysql.entity.Bookings;
 import com.luv2code.springboot.demo.mycoolapp.mysql.entity.Cabin;
@@ -31,47 +31,47 @@ public class FunRestController {
     private BookingRepository bookingRepository;
 
 
-    private final ElasticSearchImpl elasticSearch;
-    private Games myMovie;
+//    private final ElasticSearchImpl elasticSearch;
+//    private Games myMovie;
 
-    public FunRestController(ElasticSearchImpl elasticSearch, Rawg rawg) {
-        this.elasticSearch = elasticSearch;
-        this.rawg = rawg;
-    }
-    private Rawg rawg;
-
-
-
-    @PostMapping("/pushData")
-    public ResponseEntity<String> sayHello(@RequestBody Games requestBody) {
+//    public FunRestController(ElasticSearchImpl elasticSearch, Rawg rawg) {
+//        this.elasticSearch = elasticSearch;
+//        this.rawg = rawg;
+//    }
+//    private Rawg rawg;
 
 
-        try {
 
-            elasticSearch.createOrUpdateDocument(requestBody);
-            ResponseEntity<String> movieSavedSuccessfully = new ResponseEntity<>("Movie saved successfully", HttpStatus.CREATED);
-            System.out.printf(movieSavedSuccessfully.toString());
-            return movieSavedSuccessfully;
-        } catch (Exception e) {
-            return new ResponseEntity<>("Error saving movie: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
+//    @PostMapping("/pushData")
+//    public ResponseEntity<String> sayHello(@RequestBody Games requestBody) {
+//
+//
+//        try {
+//
+//            elasticSearch.createOrUpdateDocument(requestBody);
+//            ResponseEntity<String> movieSavedSuccessfully = new ResponseEntity<>("Movie saved successfully", HttpStatus.CREATED);
+//            System.out.printf(movieSavedSuccessfully.toString());
+//            return movieSavedSuccessfully;
+//        } catch (Exception e) {
+//            return new ResponseEntity<>("Error saving movie: " + e.getMessage(), HttpStatus.INTERNAL_SERVER_ERROR);
+//        }
+//    }
 
-    @GetMapping("/games/{gameId}")
-    public Result sayHello(@PathVariable String gameId) throws IOException {
-        Result result = new Result();
-        result.setError(null);
-        result.setStatus(HttpStatus.OK.value());
-        result.setResult(elasticSearch.getDocumentById(gameId));
-        
-        return result;
-    }
-    @PostMapping("/searchGames")
-    public List<Games> searchMovies(@RequestBody ElasticSearchRequestDto requestDto) throws IOException, ParseException {
-
-        System.out.println(requestDto);
-        return elasticSearch.searchSimilar(requestDto);
-    }
+//    @GetMapping("/games/{gameId}")
+//    public Result sayHello(@PathVariable String gameId) throws IOException {
+//        Result result = new Result();
+//        result.setError(null);
+//        result.setStatus(HttpStatus.OK.value());
+//        result.setResult(elasticSearch.getDocumentById(gameId));
+//
+//        return result;
+//    }
+//    @PostMapping("/searchGames")
+//    public List<Games> searchMovies(@RequestBody ElasticSearchRequestDto requestDto) throws IOException, ParseException {
+//
+//        System.out.println(requestDto);
+//        return elasticSearch.searchSimilar(requestDto);
+//    }
     @PostMapping("/pushCabins")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public Result pushCabins(@RequestBody Cabin requestDto) throws IOException, ParseException {
@@ -135,12 +135,12 @@ public class FunRestController {
         }
         return result;
     }
-    @GetMapping("/fetchAndPushGames")
-    public String fetchAndPushGames() throws Exception {
-
-
+//    @GetMapping("/fetchAndPushGames")
+//    public String fetchAndPushGames() throws Exception {
+//
+//
 //        System.print_ln()
-        return elasticSearch.fetchAndPushGames();
-    }
+//        return elasticSearch.fetchAndPushGames();
+//    }
 
 }
