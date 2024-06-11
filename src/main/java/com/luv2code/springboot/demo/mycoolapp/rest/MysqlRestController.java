@@ -140,6 +140,28 @@ public class MysqlRestController {
         return result;
     }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/guest")
+    public Result getGuestByEmail(@RequestBody JSONObject request) throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+//        JSONObject mergedJSON = me
+        System.out.println("getGuests");
+        String emailId = String.valueOf(request.get("email"));
+
+        System.out.println(emailId);
+        try {
+            Guest guests = guestRepository.getGuestByEmail(emailId);
+
+            result.setResult(guests);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/helloworld")
     public Result helloworld() throws IOException, ParseException {
         Result result = new Result();
