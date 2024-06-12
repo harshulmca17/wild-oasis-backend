@@ -94,27 +94,7 @@ public class FunRestController {
         }
         return result;
     }
-    @PostMapping("/pushGuests")
-    @CrossOrigin(origins = "*", allowedHeaders = "*")
-    public Result pushGuests(@RequestBody Guest requestDto) throws IOException, ParseException {
-
-
-        Result result = new Result();
-        result.setError(null);
-        result.setStatus(HttpStatus.OK.value());
-        result.setResult(null);
-        System.out.println(requestDto);
-
-        try {
-            Guest savedBooking = guestRepository.save(requestDto);
-            result.setResult(savedBooking);
-        } catch (Exception e) {
-            result.setError(e.getMessage());
-            result.setStatus(500);
-
-        }
-        return result;
-    } @PostMapping("/pushBookings")
+    @PostMapping("/pushBookings")
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     public Result pushBookings(@RequestBody Bookings requestDto) throws IOException, ParseException {
 

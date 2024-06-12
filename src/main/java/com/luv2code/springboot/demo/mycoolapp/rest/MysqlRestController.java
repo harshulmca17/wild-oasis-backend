@@ -161,6 +161,48 @@ public class MysqlRestController {
         }
         return result;
     }
+    @PostMapping("/pushGuests")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public Result pushGuests(@RequestBody Guest requestDto) throws IOException, ParseException {
+
+
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+        result.setResult(null);
+        System.out.println(requestDto);
+
+        try {
+            Guest savedBooking = guestRepository.save(requestDto);
+            result.setResult(savedBooking);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @PostMapping("/updateGuests")
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    public Result updateGuests(@RequestBody Guest requestDto) throws IOException, ParseException {
+
+
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+        result.setResult(null);
+        System.out.println(requestDto);
+
+        try {
+            Integer savedBooking = guestRepository.updateGuestDetails(requestDto.getId(),requestDto.getNationalID(), requestDto.getNationality(),requestDto.getCountryFlag());
+            result.setResult(savedBooking == 1? "Guest Update Successfully" :"Error occurred while updating");
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/helloworld")
     public Result helloworld() throws IOException, ParseException {

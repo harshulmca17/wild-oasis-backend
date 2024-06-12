@@ -21,7 +21,7 @@ public class Guest {
     String fullName;
     String email;
     String nationality;
-    String national;
+    String nationalID;
     String countryFlag;
 
     public void setCreated_at(Timestamp created_at) {
@@ -44,9 +44,14 @@ public class Guest {
         this.fullName = fullName;
     }
 
-    public void setNational(String national) {
-        this.national = national;
+    public void setNationalID(String nationalID) {
+        this.nationalID = nationalID;
     }
+
+    public String getNationalID() {
+        return nationalID;
+    }
+
 
     public void setNationality(String nationality) {
         this.nationality = nationality;
@@ -72,9 +77,6 @@ public class Guest {
         return fullName;
     }
 
-    public String getNational() {
-        return national;
-    }
 
     public String getNationality() {
         return nationality;
@@ -88,7 +90,7 @@ public class Guest {
                 ", fullName='" + fullName + '\'' +
                 ", email='" + email + '\'' +
                 ", nationality='" + nationality + '\'' +
-                ", national='" + national + '\'' +
+                ", national='" + nationalID + '\'' +
                 ", countryFlag='" + countryFlag + '\'' +
                 '}';
     }
