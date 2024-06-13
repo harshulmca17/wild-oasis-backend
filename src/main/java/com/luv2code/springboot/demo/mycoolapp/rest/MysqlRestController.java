@@ -453,6 +453,69 @@ public class MysqlRestController {
         return result;
     }
     @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/getBookingsByGuestId")
+    public Result getBookingsByGuestId(@RequestBody JSONObject request) throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+//        System.out.println(requestBooking);
+        System.out.println(request);
+//        JSONObject mergedJSON = me
+        try {
+            JSONObject resultFinal = new JSONObject();
+
+
+            Integer guestId;
+            guestId = request.get("guestId") != null ? (Integer) request.get("guestId") : null;
+
+            Integer pageSize = (Integer) request.get("pageSize");
+            Integer page = (Integer) request.get("page");
+
+            Integer offset = (page - 1)*pageSize;
+            Integer limitResult = pageSize;
+
+            System.out.println(offset);
+            System.out.println(limitResult);
+            List<Bookings> bookings = null;
+
+            bookings = bookingRepository.getBookingsByGuestId(guestId,offset,limitResult);
+//            bookingRepository.getBookingsByCabinIdWithLogging(cabinId,offset,limitResult);
+            Integer count = bookingRepository.getCountOfBookingsByGuestId(guestId);
+
+            List<Object> resultList = new ArrayList<>();
+            for (Bookings booking:bookings){
+                Optional<Guest> guest = guestRepository.findById(booking.getGuestId());
+                Optional<Cabin> cabin = cabinRepository.findById(booking.getCabinId());
+
+
+
+                Gson gson = new GsonBuilder().create();
+                String json = gson.toJson(booking);// obj is your object
+                JSONParser parser = new JSONParser();
+                JSONObject jsonObj = (JSONObject) parser.parse(json);
+
+                jsonObj.put("created_at",booking.getCreated_at().toString());
+                jsonObj.put("startDate",booking.getStartDate().toString());
+                jsonObj.put("endDate",booking.getEndDate().toString());
+
+                jsonObj.put("cabins",cabin);
+                jsonObj.put("guests",guest);
+
+
+                resultList.add(jsonObj);
+            }
+            resultFinal.put("pages",Math.ceil( (double) count / (double)pageSize));
+            resultFinal.put("count",count);
+            resultFinal.put("bookings",resultList);
+            result.setResult(resultFinal);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/cabin/{cabinId}")
     public Result getCabinById(@PathVariable Integer cabinId) throws IOException, ParseException {
         Result result = new Result();

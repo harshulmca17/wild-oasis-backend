@@ -40,6 +40,13 @@ public interface BookingRepository extends JpaRepository<Bookings, Integer> {
     @Query(value="SELECT count(*) from bookings as e WHERE e.cabin_id =:cabinId AND e.status ='checked-in' AND DATE(start_date) >= DATE(NOW()) ",nativeQuery = true)
     public int getCountOfBookingsByCabinId(@Param("cabinId") Integer cabinId);
 
+
+ @Query(value="SELECT * from bookings as e where  e.guest_id =:guestId  limit :offset,:limit ",nativeQuery = true)
+    public List<Bookings> getBookingsByGuestId(@Param("guestId") Integer guestId, @Param("offset") Integer offset,@Param("limit") Integer limit);
+
+    @Query(value="SELECT count(*) from bookings as e WHERE e.guest_id =:guestId ",nativeQuery = true)
+    public int getCountOfBookingsByGuestId(@Param("guestId") Integer guestId);
+
     @Query(value = "SELECT COUNT(*) FROM bookings AS e WHERE e.status = :status", nativeQuery = true)
     public int countByStatus(@Param("status") String status);
 
