@@ -653,6 +653,30 @@ public class MysqlRestController {
     }
 
     @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/updateBookingDetails")
+    public Result updateBookingDetailsCall(@RequestBody JSONObject request) throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+        try {
+            Integer id;
+            id = request.get("id") != null ? (Integer) request.get("id") : null;
+            Integer numGuests;
+            numGuests = request.get("numGuests") != null ? (Integer) request.get("numGuests") : null;
+            String observations;
+            observations = request.get("observations") != null ?  String.valueOf(request.get("observations")) : null;
+
+            Integer responses = bookingRepository.updateBookingDetails(id,numGuests,observations);
+            result.setResult("Booking Updated SuccessFully....");
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+            System.out.println(e.getMessage());
+        }
+        return result;
+    }
+
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
     @GetMapping("/cabins")
     public Result getCabins() throws IOException, ParseException {
         Result result = new Result();

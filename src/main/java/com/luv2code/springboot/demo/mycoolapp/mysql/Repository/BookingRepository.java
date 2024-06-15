@@ -3,16 +3,28 @@ package com.luv2code.springboot.demo.mycoolapp.mysql.Repository;
 
 import com.luv2code.springboot.demo.mycoolapp.mysql.entity.Bookings;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 import org.springframework.stereotype.Repository;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.util.List;
 
 
 @Repository
 public interface BookingRepository extends JpaRepository<Bookings, Integer> {
+
+
+    @Modifying
+    @Transactional
+    @Query(value="UPDATE bookings as g SET g.num_guests =:numGuests, g.observations =:observations WHERE g.id =:iD",nativeQuery = true)
+    int updateBookingDetails(@Param("iD") Integer id,
+                             @Param("numGuests") Integer numGuests,
+                             @Param("observations") String observations);
+
+
     @Query(value="SELECT * from bookings as e WHERE e.status =:status ORDER BY  :sortfield  :sortDirection limit :offset,:limit ",nativeQuery = true)
     public List<Bookings> findByFilter(@Param("status") String status,@Param("sortfield") String sortfield,@Param("sortDirection") String sortDirection,@Param("offset") Integer offset,@Param("limit") Integer limit);
 
@@ -52,4 +64,6 @@ public interface BookingRepository extends JpaRepository<Bookings, Integer> {
 
     @Query(value = "SELECT COUNT(*) FROM bookings AS e ", nativeQuery = true)
     public int countByStatus();
+
+
 }
