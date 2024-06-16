@@ -239,7 +239,7 @@ public class MysqlRestController {
             String type = (String) request.get("type");
             List<Bookings> bookings = null;
 
-            if(type == "stays"){
+            if(type.equals("stays")){
                 bookings = bookingRepository.findStaysByAfterDays(daysGap);
             }else{
                 bookings = bookingRepository.findBookingsByAfterDays(daysGap);
