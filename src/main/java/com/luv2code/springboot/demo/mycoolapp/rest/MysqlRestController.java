@@ -3,15 +3,9 @@ package com.luv2code.springboot.demo.mycoolapp.rest;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.luv2code.springboot.demo.mycoolapp.mysql.entity.Settings;
-import com.luv2code.springboot.demo.mycoolapp.mysql.Repository.SettingRepository;
+import com.luv2code.springboot.demo.mycoolapp.mysql.Repository.*;
+import com.luv2code.springboot.demo.mycoolapp.mysql.entity.*;
 import com.luv2code.springboot.demo.mycoolapp.Result.Result;
-import com.luv2code.springboot.demo.mycoolapp.mysql.entity.Bookings;
-import com.luv2code.springboot.demo.mycoolapp.mysql.entity.Cabin;
-import com.luv2code.springboot.demo.mycoolapp.mysql.entity.Guest;
-import com.luv2code.springboot.demo.mycoolapp.mysql.Repository.BookingRepository;
-import com.luv2code.springboot.demo.mycoolapp.mysql.Repository.CabinRepository;
-import com.luv2code.springboot.demo.mycoolapp.mysql.Repository.GuestRepository;
 import com.luv2code.springboot.demo.mycoolapp.mysql.service.BookingsService;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
@@ -39,6 +33,10 @@ public class MysqlRestController {
     private SettingRepository settingRepository;
     @Autowired
     private BookingsService bookingsService;
+    @Autowired
+    private AccountsRepository accountsRepository;
+    @Autowired
+    private EntryLogsRepository entryLogsRepository;
 
 
 
@@ -113,6 +111,57 @@ public class MysqlRestController {
                 resultList.add(jsonObj);
             }
             result.setResult(resultList);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/banks")
+    public Result getBanks() throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+
+        try {
+            List<Accounts> bookings = accountsRepository.findAll();
+            result.setResult(bookings);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/bank/{bankId}")
+    public Result getBankById(@PathVariable Integer bankId) throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+
+        try {
+            Optional<Accounts> bookings = accountsRepository.findById(bankId);
+            result.setResult(bookings);
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @GetMapping("/payment/{paymentId}")
+    public Result getPaymentById(@PathVariable Integer paymentId) throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+
+        try {
+            Optional<EntryLogs> bookings = entryLogsRepository.findById(paymentId);
+            result.setResult(bookings);
         } catch (Exception e) {
             result.setError(e.getMessage());
             result.setStatus(500);
@@ -215,6 +264,33 @@ public class MysqlRestController {
 
             result.setMessage("heeloworld");
             result.setResult("heeloworld");
+        } catch (Exception e) {
+            result.setError(e.getMessage());
+            result.setStatus(500);
+
+        }
+        return result;
+    }
+    @CrossOrigin(origins = "*", allowedHeaders = "*")
+    @PostMapping("/bankStatement")
+    public Result   getBankStatement(@RequestBody JSONObject request) throws IOException, ParseException {
+        Result result = new Result();
+        result.setError(null);
+        result.setStatus(HttpStatus.OK.value());
+//        System.out.println(requestBooking);
+        System.out.println(request);
+//        JSONObject mergedJSON = me
+        try {
+            JSONObject resultFinal = new JSONObject();
+
+
+            Integer daysGap = (Integer) request.get("daysGap");
+            Integer bankId = (Integer) request.get("bankId");
+            List<EntryLogs> entryLogs = entryLogsRepository.findEntriesByAfterDays(bankId,daysGap);
+
+
+//            resultFinal.put(type,resultList);
+            result.setResult(entryLogs);
         } catch (Exception e) {
             result.setError(e.getMessage());
             result.setStatus(500);
